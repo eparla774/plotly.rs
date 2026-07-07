@@ -30,7 +30,7 @@ struct PlotTemplate<'a> {
 #[cfg(any(feature = "kaleido", feature = "plotly_static"))]
 #[derive(Template)]
 #[template(path = "static_plot.html", escape = "none")]
-#[cfg(all(not(target_family = "wasm"), not(target_os = "android")))]
+#[cfg(not(target_family = "wasm"))]
 struct StaticPlotTemplate<'a> {
     plot: &'a Plot,
     format: ImageFormat,
@@ -53,7 +53,7 @@ struct JupyterNotebookPlotTemplate<'a> {
     plot_div_id: &'a str,
 }
 
-#[cfg(all(not(target_family = "wasm"), not(target_os = "android")))]
+#[cfg(not(target_family = "wasm"))]
 const DEFAULT_HTML_APP_NOT_FOUND: &str = r#"Could not find default application for HTML files.
 Consider using the `to_html` method obtain a string representation instead. If using the `kaleido` or `plotly_static` feature the
 `write_image` method can be used to produce a static image in one of the following formats:
@@ -275,7 +275,7 @@ impl Plot {
     ///
     /// The HTML file is saved in a temp file, from which it is read and
     /// displayed by the browser.
-    #[cfg(all(not(target_family = "wasm"), not(target_os = "android")))]
+    #[cfg(not(target_family = "wasm"))]
     pub fn show(&self) {
         use std::env;
         let rendered = self.render();
@@ -307,7 +307,7 @@ impl Plot {
     /// The HTML file is generated and saved in the provided filename as long as
     /// the path already exists, after the file is saved, it is read and
     /// displayed by the browser.
-    #[cfg(all(not(target_family = "wasm"), not(target_os = "android")))]
+    #[cfg(not(target_family = "wasm"))]
     pub fn show_html<P: AsRef<Path> + std::clone::Clone>(&self, filename: P) {
         let path = filename.as_ref().to_str().unwrap();
         self.write_html(filename.clone());
@@ -317,7 +317,7 @@ impl Plot {
 
     /// Display the fully rendered `Plot` as a static image of the given format
     /// in the default system browser.
-    #[cfg(all(not(target_family = "wasm"), not(target_os = "android")))]
+    #[cfg(not(target_family = "wasm"))]
     #[cfg(any(feature = "kaleido", feature = "plotly_static"))]
     pub fn show_image(&self, format: ImageFormat, width: usize, height: usize) {
         use std::env;
@@ -698,7 +698,7 @@ impl Plot {
         tmpl.render().unwrap()
     }
 
-    #[cfg(all(not(target_family = "wasm"), not(target_os = "android")))]
+    #[cfg(not(target_family = "wasm"))]
     #[cfg(any(feature = "kaleido", feature = "plotly_static"))]
     pub fn render_static(&self, format: &ImageFormat, width: usize, height: usize) -> String {
         let tmpl = StaticPlotTemplate {

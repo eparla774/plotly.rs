@@ -98,7 +98,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 
 ### Fixed
-- [[#284](https://github.com/plotly/plotly.rs/pull/284)]  Allow plotly package to be compiled for android 
+- ~~[[#284](https://github.com/plotly/plotly.rs/pull/284)]  Allow plotly package to be compiled for android ~~
 - [[#298](https://github.com/plotly/plotly.rs/pull/298)]  Added support for layout axis scaleratio
 - [[#301](https://github.com/plotly/plotly.rs/pull/301)]  Added ScatterGeo trace and LayoutGeo support 
 

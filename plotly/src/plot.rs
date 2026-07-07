@@ -790,7 +790,7 @@ impl Plot {
             .expect("Invalid JSON structure - expected a top-level Object")
     }
 
-    #[cfg(all(unix, not(target_os = "android"), not(target_os = "macos")))]
+    #[cfg(all(unix, not(target_os = "macos")))]
     fn show_with_default_app(temp_path: &str) {
         use std::process::Command;
         Command::new("xdg-open")

@@ -1,6 +1,8 @@
 #![cfg_attr(
+    any(
     not(any(feature = "geckodriver", feature = "chromedriver")),
-    allow(unused)
+    not(feature = "webdriver_download")
+    ), allow(unused)
 )]
 
 use std::env;
@@ -11,6 +13,7 @@ use std::time::Duration;
 
 use anyhow::{anyhow, Context, Result};
 use tokio::time::sleep;
+#[cfg(feature = "webdriver_download")]
 use webdriver_downloader::prelude::*;
 
 // Enforce that only one driver feature is enabled
@@ -92,6 +95,7 @@ fn is_webdriver_available(bin_name: &str) -> bool {
     false
 }
 
+#[cfg(feature = "webdriver_download")]
 async fn download_with_retry(
     driver_info: &impl WebdriverDownloadInfo,
     reinstall: bool,
@@ -125,6 +129,7 @@ async fn download_with_retry(
     ))
 }
 
+#[cfg(feature = "webdriver_download")]
 fn setup_driver(config: &WebdriverDownloadConfig) -> Result<()> {
     if is_webdriver_available(config.driver_name) {
         return Ok(());
@@ -200,7 +205,7 @@ fn setup_driver(config: &WebdriverDownloadConfig) -> Result<()> {
     Ok(())
 }
 
-#[cfg(feature = "chromedriver")]
+#[cfg(all(feature = "chromedriver", feature = "webdriver_download"))]
 fn get_chrome_path() -> Result<PathBuf> {
     if let Ok(chrome_path) = env::var(BROWSER_BIN_PATH_ENV) {
         let path = PathBuf::from(&chrome_path);
@@ -226,7 +231,7 @@ fn get_chrome_path() -> Result<PathBuf> {
     }
 }
 
-#[cfg(feature = "geckodriver")]
+#[cfg(all(feature = "geckodriver", feature = "webdriver_download"))]
 fn get_firefox_path() -> Result<PathBuf> {
     if let Ok(firefox_path) = env::var(BROWSER_BIN_PATH_ENV) {
         let path = PathBuf::from(firefox_path.clone());
@@ -271,6 +276,7 @@ fn get_browser_version(path: &PathBuf) -> Result<String> {
         })
 }
 
+#[cfg(feature = "webdriver_download")]
 async fn download(
     driver_info: &impl WebdriverDownloadInfo,
     reinstall: bool,
@@ -301,7 +307,7 @@ fn main() -> Result<()> {
             webdriver_bin_dir.to_string_lossy()
         );
 
-        #[cfg(feature = "chromedriver")]
+        #[cfg(all(feature = "chromedriver", feature = "webdriver_download"))]
         {
             let config = WebdriverDownloadConfig {
                 driver_name: CHROMEDRIVER_NAME,
@@ -310,7 +316,7 @@ fn main() -> Result<()> {
             setup_driver(&config)?;
         }
 
-        #[cfg(feature = "geckodriver")]
+        #[cfg(all(feature = "geckodriver", feature = "webdriver_download"))]
         {
             let config = WebdriverDownloadConfig {
                 driver_name: GECKODRIVER_NAME,
